@@ -1,0 +1,201 @@
+{% extends 'budget/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<style>
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
+
+*{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-decoration: none;
+  margin-top: 0 !important;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0 !important;
+  background: #101820ff no-repeat;
+}
+.sidebar {
+  position: fixed;
+  left: -250px;
+  width: 260px;
+  height: 100%;
+  background: #1167b1;
+  transition: all .5s ease;
+  border-radius: 30px;
+}
+.sidebar header {
+  font-size: 25px;
+  color: white;
+  line-height: 70px;
+  text-align: center;
+  background: black;
+  user-select: none;
+}
+.sidebar ul a{
+  display: block;
+  height: 100%;
+  width: 100%;
+  line-height: 65px;
+  font-size: 20px;
+  color: white;
+  padding-left: 40px;
+  box-sizing: border-box;
+  border-bottom: 1px solid black;
+  border-top: 1px solid rgba(255,255,255,.1);
+  transition: .4s;
+}
+ul li:hover a{
+  padding-left: 50px;
+  background: black;
+}
+.sidebar ul a i{
+  margin-right: 16px;
+}
+#check{
+  display: none;
+}
+label #btn,label #cancel{
+  position: absolute;
+  background: black;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+label #btn{
+  left: 40px;
+  top: 25px;
+  font-size: 35px;
+  color: white;
+  padding: 6px 12px;
+  transition: all .5s;
+  color: black;
+  background: #1167b1;
+}
+label #cancel{
+  z-index: 1111;
+  left: -195px;
+  top: 17px;
+  font-size: 30px;
+  background: black;
+  padding: 4px 9px;
+  transition: all .5s ease;
+  color: white;
+}
+#check:checked ~ .sidebar{
+  left: 0;
+}
+#check:checked ~ label #btn{
+  left: 250px;
+  opacity: 0;
+  pointer-events: none;
+}
+#check:checked ~ label #cancel{
+  left: 195px;
+}
+#check:checked ~ section{
+  margin-left: 250px;
+}
+section{
+  background: #101820ff no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100vh;
+  transition: all .5s;
+}
+
+.card-panel {
+  background-color: #1167b1;
+  border-radius: 20px;
+  text-align: center;
+  border-style: solid;
+  border: 2px solid white;
+  box-shadow: 3px 2px 2px 1px white;
+}
+
+.btn {
+  background-color: black;
+  border-radius: 10px;
+}
+
+.btn:hover {
+  background-color: white;
+  border-radius: 10px;
+  color: black;
+}
+
+form {
+  background-color: #1167b1;
+  border-radius: 20px;
+  border-style: solid;
+  border: 3px solid white;
+}
+
+.btn {
+  margin: 0;
+  margin-bottom: 10px;
+  position: relative;
+  left: 45%;
+  border-radius: 30px;
+  background: black;
+}
+
+.btn:hover {
+  margin: 0;
+  margin-bottom: 10px;
+  position: relative;
+  left: 45%;
+  border-radius: 30px;
+  background: white;
+  color: black;
+}
+</style>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+  <input type="checkbox" id="check">
+  <label for="check">
+    <i class="fa fa-bars" aria-hidden="true" id="btn"></i>
+    <i class="fa fa-window-close" aria-hidden="true" id="cancel"></i>
+  </label>
+  <div class="sidebar">
+    <header style="font-family: Ink Free;"><b>BudgetBucks</b></header>
+  <ul>
+    <li><a style="font-family: Ink Free; font-size: 21px;" href="{% url 'home' %}"><i class="fa fa-home"></i>Homepage</a></li>
+    <li><a style="font-family: Ink Free; font-size: 21px;" href="{% url 'list'%}"><i class="fa fa-eye" aria-hidden="true"></i>View Projects</a></li>
+    <li><a style="font-family: Ink Free; font-size: 21px;" href="{% url 'add' %}"><i class="fa fa-plus-circle" aria-hidden="true"></i>New Budget Plan</a></li>
+    <li><a style="font-family: Ink Free; font-size: 21px;" href="{% url 'edit-profile' %}"><i class="fa fa-key" aria-hidden="true"></i>My Account</a></li>
+    <li><a style="font-family: Ink Free; font-size: 21px;" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+  </ul>
+  </div>
+
+<section>
+<div class="container">
+
+  <h1 style="text-align: center; font-family: Ink Free; color: white; font-size: 80px;">My Account</h1>
+  <hr><br>
+
+  <div class="form-group">
+      <form method="POST">
+          {% csrf_token %}
+          {{ form.field.as_hidden }}
+          <label for="id_username" class="active" style="font-size: 18px; color: white; margin-left: 5px;">Username:</label>
+          <input style="margin-left: 5px;"type="text" name="username" value="BudgetBucksDemo" maxlength="150" required="" id="id_username">
+          <label for="id_password" style="font-size: 18px; color: white; margin-left: 5px;">Password:</label>
+          <span class="helptext" style="margin-left: 5px;">You can change your password using <a href="../password/" style="color: white;">this form</a>.</span>
+      
+  </div>
+  <br><button class="btn btn-secondary">Update Account</button>
+  
+</div>
+</section>
+</body>
+</html>
+{% endblock %}
